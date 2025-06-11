@@ -319,9 +319,12 @@ print(f"励まし: {encouragement}")
    export PYTHONPATH="${PYTHONPATH}:$(pwd)"
    ```
 
-2. **JSON serialization error**: datetimeオブジェクトの処理は自動化済み
+2. **Pydantic compatibility error**: Pydantic v1/v2の両方をサポート済み
+   - 自動的にバージョンを検出し適切なメソッドを使用
 
-3. **データファイルが見つからない**: `data/`ディレクトリは自動作成されます
+3. **JSON serialization error**: datetimeオブジェクトの処理は自動化済み
+
+4. **データファイルが見つからない**: `data/`ディレクトリは自動作成されます
 
 ### ログの確認
 

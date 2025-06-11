@@ -249,9 +249,14 @@ class MentorAgent(BaseMentorAgent):
         """フィードバックをファイルに保存"""
         feedback_path = self.data_dir / "feedbacks" / f"{feedback.id}.json"
         with open(feedback_path, "w", encoding="utf-8") as f:
-            # Pydanticのjson()メソッドを使用してdatetimeを適切にシリアライズ
-            feedback_json = feedback.json(ensure_ascii=False, indent=2)
-            f.write(feedback_json)
+            # Pydanticバージョン互換性のためjson.dumpを使用
+            if hasattr(feedback, 'model_dump'):
+                # Pydantic v2
+                data = feedback.model_dump()
+            else:
+                # Pydantic v1
+                data = feedback.dict()
+            json.dump(data, f, ensure_ascii=False, indent=2, default=str)
     
     def _define_growth_objectives(self, employee: Employee, analysis: Dict[str, Any]) -> List[Dict[str, Any]]:
         objectives = []
@@ -455,13 +460,24 @@ class MentorAgent(BaseMentorAgent):
         if employee_path.exists():
             with open(employee_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
-                return Employee(**data)
+                # Pydanticバージョン互換性
+                if hasattr(Employee, 'model_validate'):
+                    # Pydantic v2
+                    return Employee.model_validate(data)
+                else:
+                    # Pydantic v1
+                    return Employee(**data)
         return None
     
     def save_employee(self, employee: Employee):
         """社員データを保存"""
         employee_path = self.data_dir / "employees" / f"{employee.id}.json"
         with open(employee_path, "w", encoding="utf-8") as f:
-            # Pydanticのjson()メソッドを使用してdatetimeを適切にシリアライズ
-            employee_json = employee.json(ensure_ascii=False, indent=2)
-            f.write(employee_json)
+            # Pydanticバージョン互換性のためjson.dumpを使用
+            if hasattr(employee, 'model_dump'):
+                # Pydantic v2
+                data = employee.model_dump()
+            else:
+                # Pydantic v1
+                data = employee.dict()
+            json.dump(data, f, ensure_ascii=False, indent=2, default=str)

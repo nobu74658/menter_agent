@@ -1,0 +1,63 @@
+{
+  "id": "f4629e94-2341-42fc-bf6e-6dcc8378be40",
+  "employee_id": "emp_001",
+  "mentor_id": "mentor_agent_001",
+  "created_at": "2025-06-12T06:39:03.275559",
+  "type": "constructive",
+  "category": "technical",
+  "summary": "Performance feedback for 田中太郎",
+  "detailed_feedback": "Based on analysis, your overall performance is Satisfactory. Your growth trajectory appears to be Slow.",
+  "impact_score": 5.0,
+  "confidence_level": 0.85,
+  "specific_examples": [
+    "Demonstrated progress in Communication"
+  ],
+  "observed_behaviors": [
+    "Quick learner",
+    "Team player",
+    "Attention to detail"
+  ],
+  "recommendations": [
+    "Focus on improving Technical documentation",
+    "Focus on improving Time management",
+    "Focus on improving Public speaking",
+    "Consider adjusting learning approach"
+  ],
+  "action_items": [
+    {
+      "description": "Focus on improving Technical documentation",
+      "due_date": "2025-07-12T06:39:03.275509",
+      "priority": "high",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    },
+    {
+      "description": "Focus on improving Time management",
+      "due_date": "2025-08-11T06:39:03.275523",
+      "priority": "medium",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    },
+    {
+      "description": "Focus on improving Public speaking",
+      "due_date": "2025-09-10T06:39:03.275528",
+      "priority": "medium",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    }
+  ],
+  "suggested_resources": [],
+  "skill_improvements": {
+    "Python Programming": 45.0,
+    "Communication": 72.0,
+    "Project Management": 30.0
+  },
+  "expected_timeline": "30-60 days",
+  "is_automated": true,
+  "employee_acknowledged": false,
+  "follow_up_required": true,
+  "follow_up_date": null
+}
