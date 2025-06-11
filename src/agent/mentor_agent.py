@@ -11,9 +11,6 @@ from ..models import (
     SkillProgress, Milestone, MilestoneStatus,
     GrowthTrend
 )
-from ..services.analysis_service import AnalysisService
-from ..services.feedback_service import FeedbackService
-from ..services.growth_service import GrowthService
 
 
 class MentorAgent(BaseMentorAgent):
@@ -21,9 +18,6 @@ class MentorAgent(BaseMentorAgent):
     
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         super().__init__(config)
-        self.analysis_service = AnalysisService()
-        self.feedback_service = FeedbackService()
-        self.growth_service = GrowthService()
         
     def initialize(self):
         """エージェントの初期化"""
