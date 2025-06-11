@@ -249,13 +249,20 @@ class MentorAgent(BaseMentorAgent):
         """フィードバックをファイルに保存"""
         feedback_path = self.data_dir / "feedbacks" / f"{feedback.id}.json"
         with open(feedback_path, "w", encoding="utf-8") as f:
-            json.dump(feedback.dict(), f, ensure_ascii=False, indent=2)
+            # Pydanticのjson()メソッドを使用してdatetimeを適切にシリアライズ
+            feedback_json = feedback.json(ensure_ascii=False, indent=2)
+            f.write(feedback_json)
     
-    def _define_growth_objectives(self, employee: Employee, analysis: Dict[str, Any]) -> List[str]:
+    def _define_growth_objectives(self, employee: Employee, analysis: Dict[str, Any]) -> List[Dict[str, Any]]:
         objectives = []
         for skill in employee.skills:
             if skill.progress_rate < 70:
-                objectives.append(f"Improve {skill.name} to intermediate level")
+                objectives.append({
+                    "area": skill.name,
+                    "current_state": skill.level.value,
+                    "target_state": "intermediate",
+                    "priority": "high" if skill.progress_rate < 40 else "medium"
+                })
         return objectives[:5]  # Top 5 objectives
     
     def _create_milestones(self, employee: Employee, timeframe: int) -> List[Dict[str, Any]]:
@@ -282,12 +289,14 @@ class MentorAgent(BaseMentorAgent):
     
     def _design_learning_path(self, employee: Employee) -> List[Dict[str, Any]]:
         path = []
-        for skill in employee.skills:
+        for idx, skill in enumerate(employee.skills):
             if skill.progress_rate < 70:
                 path.append({
+                    "step": idx + 1,
                     "skill": skill.name,
                     "current_level": skill.level.value,
                     "target_level": "intermediate",
+                    "duration_days": 30,
                     "recommended_resources": ["Online course", "Mentorship", "Practice projects"]
                 })
         return path
@@ -453,4 +462,6 @@ class MentorAgent(BaseMentorAgent):
         """社員データを保存"""
         employee_path = self.data_dir / "employees" / f"{employee.id}.json"
         with open(employee_path, "w", encoding="utf-8") as f:
-            json.dump(employee.dict(), f, ensure_ascii=False, indent=2)
+            # Pydanticのjson()メソッドを使用してdatetimeを適切にシリアライズ
+            employee_json = employee.json(ensure_ascii=False, indent=2)
+            f.write(employee_json)
