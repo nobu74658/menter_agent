@@ -1,96 +1,97 @@
-# Mentor Agent - AI Support for New Employee Education
+# メンターエージェント - 新人社員教育支援AI
 
-## Overview
+## 概要
 
-Mentor Agent is an AI agent that plays the role of a senior employee educating new employees. It analyzes new employee performance data to identify strengths and areas for improvement, providing autonomous and personalized support to promote their growth.
+メンターエージェントは、新人社員を教育する先輩社員の役割を担うAIエージェントです。新人社員のパフォーマンスデータを分析し、強みと改善点を特定して、自律的で個別化されたサポートを提供し、成長を促進します。
 
-## Key Features
+## 主要機能
 
-- **Comprehensive Analysis**: Multi-dimensional analysis of skills, learning pace, and performance metrics
-- **Personalized Feedback**: AI-generated feedback adapted to individual learning styles and capabilities
-- **Autonomous Support**: Proactive identification of issues and automatic support provision
-- **Growth Tracking**: Time-series progress monitoring with detailed growth records
-- **Adaptive Communication**: Communication style adjustment based on employee's listening ability and learning pace
-- **Learning Path Design**: Customized 90-day growth plans with specific milestones and objectives
+- **包括的分析**: スキル、学習ペース、パフォーマンス指標の多次元分析
+- **個別化フィードバック**: 個人の学習スタイルと能力に適応したAI生成フィードバック
+- **自律的サポート**: 問題の予防的特定と自動サポート提供
+- **成長トラッキング**: 詳細な成長記録による時系列進捗監視
+- **適応的コミュニケーション**: 社員の理解力と学習ペースに基づくコミュニケーションスタイル調整
+- **学習パス設計**: 具体的なマイルストーンと目標を含む90日間のカスタマイズ成長計画
 
-## Special Consideration for New Employees
+## 新人社員への特別配慮
 
-This agent is specifically designed for new employees who may have limited listening skills or learning capacity:
+このエージェントは、聞く能力や学習能力に限りがある新人社員を特に考慮して設計されています：
 
-- **Graduated explanations** based on learning pace
-- **Supportive tone** for slower learners with detailed step-by-step guidance
-- **Direct approach** for fast learners with concise, action-oriented feedback
-- **Regular check-ins** with frequency adjusted to individual needs
-- **Concrete action items** with clear deadlines and priorities
+- **段階的説明**: 学習ペースに基づいた説明レベルの調整
+- **サポート的アプローチ**: 学習の遅い社員には詳細なステップバイステップ指導
+- **直接的アプローチ**: 学習の早い社員には簡潔で行動指向のフィードバック
+- **定期チェックイン**: 個人のニーズに応じた頻度調整
+- **具体的アクション**: 明確な期限と優先度を持つ実行可能な項目
 
-## Project Structure
+## プロジェクト構造
 
 ```
 menter_agent/
 ├── src/
-│   ├── agent/         # Core logic of mentor agent
-│   ├── models/        # Data model definitions
-│   ├── services/      # Business logic services
-│   └── utils/         # Utility functions
+│   ├── agent/         # メンターエージェントのコアロジック
+│   ├── models/        # データモデル定義
+│   ├── services/      # ビジネスロジックサービス
+│   └── utils/         # ユーティリティ関数
 ├── data/
-│   ├── employees/     # Employee data
-│   └── feedbacks/     # Feedback data
-├── tests/             # Test cases
-├── config/            # Configuration files
-└── requirements.txt   # Dependencies
+│   ├── employees/     # 社員データ
+│   └── feedbacks/     # フィードバックデータ
+├── tests/             # テストケース
+├── config/            # 設定ファイル
+├── example.py         # デモンストレーション用スクリプト
+└── requirements.txt   # 依存関係
 ```
 
-## Installation
+## インストール
 
-### Prerequisites
+### 前提条件
 
-- Python 3.8 or higher
-- Git (for cloning the repository)
+- Python 3.8以上
+- Git（リポジトリのクローン用）
 
-### Setup
+### セットアップ
 
-1. **Clone the repository**
+1. **リポジトリのクローン**
    ```bash
    git clone <repository-url>
    cd menter_agent
    ```
 
-2. **Create virtual environment**
+2. **仮想環境の作成**
    ```bash
    python -m venv venv
-   source venv/bin/activate  # For Windows: venv\Scripts\activate
+   source venv/bin/activate  # Windows: venv\Scripts\activate
    ```
 
-3. **Install dependencies**
+3. **依存関係のインストール**
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Verify installation**
+4. **インストールの確認**
    ```bash
-   python -c "from src.agent import MentorAgent; print('Installation successful!')"
+   python -c "from src.agent import MentorAgent; print('インストール成功！')"
    ```
 
-## Quick Start Demo
+## クイックスタート デモ
 
-### Running the Demo
+### デモの実行
 
-The easiest way to see the Mentor Agent in action is to run the provided demonstration:
+メンターエージェントの動作を確認する最も簡単な方法は、提供されているデモンストレーションを実行することです：
 
 ```bash
 python example.py
 ```
 
-This will:
-1. Create a sample new employee (田中太郎)
-2. Initialize the mentor agent
-3. Perform comprehensive employee analysis
-4. Generate personalized feedback
-5. Create a 90-day growth plan
-6. Track progress and provide autonomous support
-7. Save all data to the `data/` directory
+このコマンドで以下が実行されます：
+1. サンプル新人社員（田中太郎）の作成
+2. メンターエージェントの初期化
+3. 社員の包括的分析の実行
+4. 個別化フィードバックの生成
+5. 90日間の成長計画作成
+6. 進捗トラッキングと自律的サポート提供
+7. 全データを`data/`ディレクトリに保存
 
-### Demo Output Example
+### デモ出力例
 
 ```
 🤖 メンターエージェント デモンストレーション
@@ -134,84 +135,84 @@ This will:
 🤝 自律的サポート例:
 ------------------------------
 Skill Gapサポート:
-   - Identify specific skill gaps
-   - Recommend targeted learning resources
+   - 特定のスキルギャップを特定
+   - 対象となる学習リソースを推奨
 ```
 
-## Advanced Usage
+## 高度な使用方法
 
-### Creating Custom Employees
+### カスタム社員の作成
 
 ```python
 from datetime import datetime, timedelta
 from src.agent import MentorAgent
 from src.models import Employee, Skill, SkillLevel, Department
 
-# Create custom employee
+# カスタム社員の作成
 employee = Employee(
     id="emp_002",
-    name="Your Employee Name",
-    email="employee@example.com",
+    name="山田花子",
+    email="yamada@example.com",
     department=Department.ENGINEERING,
     hire_date=datetime.now() - timedelta(days=60),
-    learning_pace=1.2,  # Adjust based on learning speed
+    learning_pace=1.2,  # 学習速度に基づいて調整
     preferred_learning_style="visual",  # visual, auditory, kinesthetic
-    # ... add more attributes
+    # ... その他の属性を追加
 )
 
-# Initialize mentor agent
+# メンターエージェントの初期化
 mentor = MentorAgent()
 mentor.initialize()
 
-# Save employee data
+# 社員データの保存
 mentor.save_employee(employee)
 
-# Generate analysis and feedback
+# 分析とフィードバックの生成
 analysis = mentor.analyze_employee(employee)
 feedback = mentor.generate_feedback(employee)
 growth_plan = mentor.create_growth_plan(employee)
 ```
 
-### Providing Targeted Support
+### 対象的サポートの提供
 
 ```python
-# Provide specific support based on issues
+# 問題に基づく特定サポートの提供
 support_response = mentor.provide_support(employee, "skill_gap")
-print(f"Support provided: {support_response['support_provided']}")
+print(f"提供されたサポート: {support_response['support_provided']}")
 
-# Available support types:
-# - "skill_gap": For employees lacking specific skills
-# - "motivation": For employees with low motivation
-# - "communication": For communication-related issues
-# - "workload": For workload management problems
+# 利用可能なサポートタイプ:
+# - "skill_gap": 特定スキル不足の社員向け
+# - "motivation": モチベーションが低い社員向け
+# - "communication": コミュニケーション関連の問題
+# - "workload": 作業負荷管理の問題
 ```
 
-### Data Management
+### データ管理
 
 ```python
-# Load existing employee
+# 既存社員の読み込み
 employee = mentor.load_employee("employee_id")
 
-# Track progress over time
+# 時系列での進捗トラッキング
 from datetime import datetime, timedelta
 start_date = datetime.now() - timedelta(days=30)
 end_date = datetime.now()
 growth_record = mentor.track_progress(employee, start_date, end_date)
 
-print(f"Growth trend: {growth_record.growth_trend}")
-print(f"Overall score: {growth_record.overall_growth_score}")
+print(f"成長トレンド: {growth_record.growth_trend}")
+print(f"総合スコア: {growth_record.overall_growth_score}")
 ```
 
-## Data Storage
+## データストレージ
 
-The agent automatically saves data in JSON format:
+エージェントは自動的にデータをJSON形式で保存します：
 
-- **Employee data**: `data/employees/{employee_id}.json`
-- **Feedback records**: `data/feedbacks/{feedback_id}.json`
+- **社員データ**: `data/employees/{employee_id}.json`
+- **フィードバック記録**: `data/feedbacks/{feedback_id}.json`
 
-### Example Data Structure
+### データ構造例
 
-**Employee Data** (`data/employees/emp_001.json`):
+**社員データ** (`data/employees/emp_001.json`):
 ```json
 {
   "id": "emp_001",
@@ -225,33 +226,117 @@ The agent automatically saves data in JSON format:
     }
   ],
   "learning_pace": 0.8,
-  "strengths": ["Quick learner", "Team player"],
-  "improvement_areas": ["Technical documentation", "Time management"]
+  "strengths": ["素早い学習者", "チームプレイヤー"],
+  "improvement_areas": ["技術文書作成", "時間管理"]
 }
 ```
 
-## Customization
+**フィードバックデータ** (`data/feedbacks/{feedback_id}.json`):
+```json
+{
+  "id": "fb_001_20250612",
+  "employee_id": "emp_001",
+  "type": "constructive",
+  "summary": "田中太郎さんのパフォーマンスフィードバック",
+  "detailed_feedback": "分析に基づき、あなたの総合パフォーマンスは良好です...",
+  "action_items": [
+    {
+      "description": "技術文書作成スキルの向上",
+      "due_date": "2025-07-12",
+      "priority": "high"
+    }
+  ]
+}
+```
 
-### Adjusting Communication Style
+## カスタマイズ
 
-The agent automatically adjusts its communication style based on:
+### コミュニケーションスタイルの調整
 
-- **Learning pace < 0.7**: Supportive, detailed explanations
-- **Learning pace > 1.3**: Direct, concise feedback
-- **Standard pace**: Balanced approach
+エージェントは以下に基づいて自動的にコミュニケーションスタイルを調整します：
 
-### Custom Configuration
+- **学習ペース < 0.7**: サポート的、詳細な説明
+- **学習ペース > 1.3**: 直接的、簡潔なフィードバック
+- **標準ペース**: バランスの取れたアプローチ
+
+### カスタム設定
 
 ```python
 config = {
-    "feedback_frequency": "weekly",  # weekly, bi-weekly, monthly
-    "min_skill_threshold": 40,       # Minimum skill level for focus
-    "growth_plan_duration": 90       # Days for growth planning
+    "feedback_frequency": "weekly",     # weekly, bi-weekly, monthly
+    "min_skill_threshold": 40,          # フォーカスする最小スキルレベル
+    "growth_plan_duration": 90,         # 成長計画の日数
+    "support_threshold": 0.7            # サポート介入の閾値
 }
 
 mentor = MentorAgent(config=config)
 ```
 
-## License
+### フィードバックスタイルのカスタマイズ
+
+```python
+from src.services import FeedbackService
+
+feedback_service = FeedbackService()
+
+# 学習ペースに応じたメッセージ調整
+adjusted_message = feedback_service.adjust_communication_style(
+    employee, 
+    "あなたのプログラミングスキルを向上させる必要があります"
+)
+
+# 励ましのメッセージ生成
+encouragement = feedback_service.generate_encouragement(employee)
+print(f"励まし: {encouragement}")
+```
+
+## トラブルシューティング
+
+### よくある問題
+
+1. **ImportError**: Pythonパスの確認
+   ```bash
+   export PYTHONPATH="${PYTHONPATH}:$(pwd)"
+   ```
+
+2. **JSON serialization error**: datetimeオブジェクトの処理は自動化済み
+
+3. **データファイルが見つからない**: `data/`ディレクトリは自動作成されます
+
+### ログの確認
+
+```python
+import logging
+logging.basicConfig(level=logging.INFO)
+
+mentor = MentorAgent()
+# ログ出力でデバッグ情報を確認
+```
+
+## 貢献とサポート
+
+### 開発者向け
+
+プロジェクトへの貢献を歓迎します：
+
+1. リポジトリをフォーク
+2. 機能ブランチを作成 (`git checkout -b feature/amazing-feature`)
+3. 変更をコミット (`git commit -m 'Add amazing feature'`)
+4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
+5. プルリクエストを作成
+
+### 今後の拡張予定
+
+- **Web UI**: ブラウザベースのインターフェース
+- **レポート生成**: PDF/Excel形式での進捗レポート
+- **チーム分析**: 部署やチーム全体の分析機能
+- **LLM統合**: より高度な自然言語処理
+- **多言語サポート**: 英語・中国語などの対応
+
+## ライセンス
 
 MIT License
+
+---
+
+**メンターエージェント**は新人社員の成長を支援し、組織の人材育成を効率化するAI駆動ソリューションです。一人ひとりに寄り添った指導で、新人社員の能力を最大限に引き出します。
