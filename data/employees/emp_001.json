@@ -3,25 +3,25 @@
   "name": "田中太郎",
   "email": "tanaka@example.com",
   "department": "engineering",
-  "hire_date": "2025-03-14 06:47:03.717367",
+  "hire_date": "2025-03-14 07:28:04.579660",
   "mentor_id": null,
   "skills": [
     {
       "name": "Python Programming",
       "level": "beginner",
-      "last_assessed": "2025-05-13 06:47:03.716944",
+      "last_assessed": "2025-05-13 07:28:04.579603",
       "progress_rate": 45.0
     },
     {
       "name": "Communication",
       "level": "intermediate",
-      "last_assessed": "2025-05-28 06:47:03.717332",
+      "last_assessed": "2025-05-28 07:28:04.579649",
       "progress_rate": 72.0
     },
     {
       "name": "Project Management",
       "level": "beginner",
-      "last_assessed": "2025-05-23 06:47:03.717349",
+      "last_assessed": "2025-05-23 07:28:04.579652",
       "progress_rate": 30.0
     }
   ],
@@ -32,14 +32,14 @@
       "metric_name": "Code Quality",
       "value": 7.5,
       "target_value": 8.0,
-      "achieved_date": "2025-06-02 06:47:03.717355",
+      "achieved_date": "2025-06-02 07:28:04.579653",
       "category": "technical"
     },
     {
       "metric_name": "Team Collaboration",
       "value": 8.2,
       "target_value": 8.0,
-      "achieved_date": "2025-06-07 06:47:03.717362",
+      "achieved_date": "2025-06-07 07:28:04.579657",
       "category": "teamwork"
     }
   ],
@@ -63,6 +63,6 @@
     "Python認定資格取得",
     "コードレビュースキル向上"
   ],
-  "created_at": "2025-06-12 06:47:03.717444",
-  "updated_at": "2025-06-12 06:47:03.717444"
+  "created_at": "2025-06-12 07:28:04.579938",
+  "updated_at": "2025-06-12 07:28:04.579940"
 }

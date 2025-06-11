@@ -1,0 +1,64 @@
+{
+  "id": "a0fda4aa-2047-422a-803e-1ca10d06c24e",
+  "employee_id": "emp_001",
+  "mentor_id": "mentor_agent_llm",
+  "created_at": "2025-06-12 06:55:21.642868",
+  "type": "constructive",
+  "category": "technical",
+  "summary": "技術文書作成と時間管理のスキル向上が必要です",
+  "detailed_feedback": "田中太郎さん、あなたの学習ペースは安定していますが、技術文書作成と時間管理が改善の余地があります。技術文書はプロジェクトの成功に不可欠であり、時間管理は効果的な業務遂行に直結します。具体的な改善策として、テンプレートを活用した文書作成の練習やデッドラインを設定してのタイムマネジメントをお勧めします。",
+  "impact_score": 5.0,
+  "confidence_level": 0.95,
+  "specific_examples": [
+    "Communicationで進歩を示しています"
+  ],
+  "observed_behaviors": [
+    "学習が早い",
+    "チームプレイヤー",
+    "細部への注意力"
+  ],
+  "recommendations": [
+    "1. Python認定資格取得のため、学習計画を作成しサポートを提供。",
+    "2. プレゼンテーションスキル向上のための研修を受講を奨励。",
+    "3. 技術文書作成の練習やフィードバックを定期的に行う。",
+    "4. チーム内でのコードレビューを通じてスキル向上を促進。",
+    "5. 時間管理に関するツールやテクニックを共有し、サポートを提供。"
+  ],
+  "action_items": [
+    {
+      "description": "技術文書作成の向上に重点的に取り組みましょう",
+      "due_date": "2025-07-12 06:55:21.642765",
+      "priority": "high",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    },
+    {
+      "description": "時間管理の向上に重点的に取り組みましょう",
+      "due_date": "2025-08-11 06:55:21.642808",
+      "priority": "medium",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    },
+    {
+      "description": "プレゼンテーションの向上に重点的に取り組みましょう",
+      "due_date": "2025-09-10 06:55:21.642813",
+      "priority": "medium",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    }
+  ],
+  "suggested_resources": [],
+  "skill_improvements": {
+    "Python Programming": 45.0,
+    "Communication": 72.0,
+    "Project Management": 30.0
+  },
+  "expected_timeline": "30-60 days",
+  "is_automated": true,
+  "employee_acknowledged": false,
+  "follow_up_required": true,
+  "follow_up_date": null
+}

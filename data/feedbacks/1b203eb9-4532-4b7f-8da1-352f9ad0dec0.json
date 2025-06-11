@@ -1,0 +1,65 @@
+{
+  "id": "1b203eb9-4532-4b7f-8da1-352f9ad0dec0",
+  "employee_id": "emp_autonomous_001",
+  "mentor_id": "mentor_agent_llm",
+  "created_at": "2025-06-12 07:30:56.722873",
+  "type": "constructive",
+  "category": "technical",
+  "summary": "プログラミング基礎とデータ分析手法の向上が必要",
+  "detailed_feedback": "佐藤美咲さん、コミュニケーション能力やチームワークの強みを活かし、プログラミング基礎とデータ分析手法の向上を目指しましょう。Python ProgrammingとData Analysisの進捗が低いため、基礎からじっくり学ぶことが重要です。",
+  "impact_score": 3.33,
+  "confidence_level": 0.95,
+  "specific_examples": [
+    "Communicationで進歩を示しています"
+  ],
+  "observed_behaviors": [
+    "コミュニケーション能力",
+    "チームワーク",
+    "責任感"
+  ],
+  "recommendations": [
+    "1. Python学習を加速させるためのオンラインコースを提供。",
+    "2. データ分析プロジェクトでメンターをサポート役に配置。",
+    "3. 問題解決スピード向上のためのハンズオンワークショップ実施。",
+    "4. 自習能力向上のための学習プラン作成とフィードバックセッション。",
+    "5. 技術文書理解を深めるための実務課題とフィードバックセッション。"
+  ],
+  "action_items": [
+    {
+      "description": "プログラミング基礎の向上に重点的に取り組みましょう",
+      "due_date": "2025-07-12 07:30:56.722807",
+      "priority": "high",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    },
+    {
+      "description": "データ分析手法の向上に重点的に取り組みましょう",
+      "due_date": "2025-08-11 07:30:56.722835",
+      "priority": "medium",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    },
+    {
+      "description": "問題解決スピードの向上に重点的に取り組みましょう",
+      "due_date": "2025-09-10 07:30:56.722839",
+      "priority": "medium",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    }
+  ],
+  "suggested_resources": [],
+  "skill_improvements": {
+    "Python Programming": 35.0,
+    "Data Analysis": 25.0,
+    "Communication": 80.0,
+    "Problem Solving": 45.0
+  },
+  "expected_timeline": "30-60 days",
+  "is_automated": true,
+  "employee_acknowledged": false,
+  "follow_up_required": true,
+  "follow_up_date": null
+}

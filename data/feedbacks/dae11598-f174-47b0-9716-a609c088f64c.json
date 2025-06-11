@@ -1,0 +1,65 @@
+{
+  "id": "dae11598-f174-47b0-9716-a609c088f64c",
+  "employee_id": "emp_autonomous_001",
+  "mentor_id": "mentor_agent_llm",
+  "created_at": "2025-06-12 08:03:59.701433",
+  "type": "constructive",
+  "category": "technical",
+  "summary": "佐藤美咲さんへのAIフィードバック",
+  "detailed_feedback": "```json\n{\n  \"summary\": \"基礎スキル向上に集中し、学習ペースを調整する必要があります。\",\n  \"detailed\": \"美咲さん、これまでの120日間での努力、特にコミュニケーション能力とチームワークにおける成果は素晴らしいです。ただし、エンジニアリング分野で更に活躍するためには、プログラミング基礎とデータ分析手法の強化が必要です。現在、Pythonとデータ分析の進捗が遅れているようですので、学習を視覚的な教材（例えばオンラインビデオやインフォグラフィック）を活用して進めることをお勧めします。また、問題解決スキルについては、具体的な課題を短い時間で解く練習をして、スピード感を養うと良いでしょう。一度に多くを詰め込まず、1日1時間程度から無理のないペースで徐々に進めることを目指しましょう。\",\n  \"encouragement\": \"美咲さんの責任感とチームワークは大",
+  "impact_score": 3.33,
+  "confidence_level": 0.95,
+  "specific_examples": [
+    "Communicationで進歩を示しています"
+  ],
+  "observed_behaviors": [
+    "コミュニケーション能力",
+    "チームワーク",
+    "責任感"
+  ],
+  "recommendations": [
+    "1. Python基礎を毎日30分学習し、実践課題を解く。",
+    "2. データ分析プロジェクトで簡単な役割を担当。",
+    "3. コードレビューに観察者として参加し学ぶ。",
+    "4. 技術文書を短時間で読む練習を週2回実施。",
+    "5. 上司や同僚に質問し、自習方法を改善する。"
+  ],
+  "action_items": [
+    {
+      "description": "プログラミング基礎の向上に重点的に取り組みましょう",
+      "due_date": "2025-07-12 08:03:59.701372",
+      "priority": "high",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    },
+    {
+      "description": "データ分析手法の向上に重点的に取り組みましょう",
+      "due_date": "2025-08-11 08:03:59.701393",
+      "priority": "medium",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    },
+    {
+      "description": "問題解決スピードの向上に重点的に取り組みましょう",
+      "due_date": "2025-09-10 08:03:59.701396",
+      "priority": "medium",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    }
+  ],
+  "suggested_resources": [],
+  "skill_improvements": {
+    "Python Programming": 35.0,
+    "Data Analysis": 25.0,
+    "Communication": 80.0,
+    "Problem Solving": 45.0
+  },
+  "expected_timeline": "30-60 days",
+  "is_automated": true,
+  "employee_acknowledged": false,
+  "follow_up_required": true,
+  "follow_up_date": null
+}

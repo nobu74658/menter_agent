@@ -1,0 +1,64 @@
+{
+  "id": "cc03e4f2-bd3b-4ae1-88fe-bb6a09f5b237",
+  "employee_id": "emp_autonomous_001",
+  "mentor_id": "mentor_agent_rule",
+  "created_at": "2025-06-12 07:38:53.428468",
+  "type": "constructive",
+  "category": "technical",
+  "summary": "佐藤美咲さんへのフィードバック",
+  "detailed_feedback": "分析の結果、あなたの総合的なパフォーマンスは「要改善」です。成長の軌道は「緩やか」と評価されます。",
+  "impact_score": 3.33,
+  "confidence_level": 0.85,
+  "specific_examples": [
+    "Communicationで進歩を示しています"
+  ],
+  "observed_behaviors": [
+    "コミュニケーション能力",
+    "チームワーク",
+    "責任感"
+  ],
+  "recommendations": [
+    "プログラミング基礎の向上に重点的に取り組みましょう",
+    "データ分析手法の向上に重点的に取り組みましょう",
+    "問題解決スピードの向上に重点的に取り組みましょう",
+    "学習アプローチの調整を検討してください"
+  ],
+  "action_items": [
+    {
+      "description": "プログラミング基礎の向上に重点的に取り組みましょう",
+      "due_date": "2025-07-12 07:38:53.428442",
+      "priority": "high",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    },
+    {
+      "description": "データ分析手法の向上に重点的に取り組みましょう",
+      "due_date": "2025-08-11 07:38:53.428450",
+      "priority": "medium",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    },
+    {
+      "description": "問題解決スピードの向上に重点的に取り組みましょう",
+      "due_date": "2025-09-10 07:38:53.428452",
+      "priority": "medium",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    }
+  ],
+  "suggested_resources": [],
+  "skill_improvements": {
+    "Python Programming": 35.0,
+    "Data Analysis": 25.0,
+    "Communication": 80.0,
+    "Problem Solving": 45.0
+  },
+  "expected_timeline": "30-60 days",
+  "is_automated": true,
+  "employee_acknowledged": false,
+  "follow_up_required": true,
+  "follow_up_date": null
+}

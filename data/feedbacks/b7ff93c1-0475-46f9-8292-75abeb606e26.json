@@ -1,0 +1,63 @@
+{
+  "id": "b7ff93c1-0475-46f9-8292-75abeb606e26",
+  "employee_id": "emp_001",
+  "mentor_id": "mentor_agent_rule",
+  "created_at": "2025-06-12 06:58:38.154957",
+  "type": "constructive",
+  "category": "technical",
+  "summary": "田中太郎さんへのフィードバック",
+  "detailed_feedback": "分析の結果、あなたの総合的なパフォーマンスは「普通」です。成長の軌道は「緩やか」と評価されます。",
+  "impact_score": 5.0,
+  "confidence_level": 0.85,
+  "specific_examples": [
+    "Communicationで進歩を示しています"
+  ],
+  "observed_behaviors": [
+    "学習が早い",
+    "チームプレイヤー",
+    "細部への注意力"
+  ],
+  "recommendations": [
+    "技術文書作成の向上に重点的に取り組みましょう",
+    "時間管理の向上に重点的に取り組みましょう",
+    "プレゼンテーションの向上に重点的に取り組みましょう",
+    "学習アプローチの調整を検討してください"
+  ],
+  "action_items": [
+    {
+      "description": "技術文書作成の向上に重点的に取り組みましょう",
+      "due_date": "2025-07-12 06:58:38.154935",
+      "priority": "high",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    },
+    {
+      "description": "時間管理の向上に重点的に取り組みましょう",
+      "due_date": "2025-08-11 06:58:38.154940",
+      "priority": "medium",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    },
+    {
+      "description": "プレゼンテーションの向上に重点的に取り組みましょう",
+      "due_date": "2025-09-10 06:58:38.154943",
+      "priority": "medium",
+      "resources": [],
+      "estimated_hours": 20.0,
+      "completed": false
+    }
+  ],
+  "suggested_resources": [],
+  "skill_improvements": {
+    "Python Programming": 45.0,
+    "Communication": 72.0,
+    "Project Management": 30.0
+  },
+  "expected_timeline": "30-60 days",
+  "is_automated": true,
+  "employee_acknowledged": false,
+  "follow_up_required": true,
+  "follow_up_date": null
+}

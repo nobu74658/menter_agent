@@ -68,13 +68,20 @@ def create_sample_employee() -> Employee:
     return employee
 
 def demonstrate_mentor_agent():
-    """メンターエージェントのデモンストレーション"""
-    print("🤖 メンターエージェント デモンストレーション")
-    print("=" * 50)
+    """メンターエージェントのデモンストレーション（LLM統合版）"""
+    print("🤖 メンターエージェント デモンストレーション（LLM統合版）")
+    print("=" * 60)
     
     # エージェントの初期化
     mentor = MentorAgent()
     mentor.initialize()
+    
+    # LLMステータスの確認
+    llm_status = mentor.get_llm_status()
+    print(f"\n🔧 LLMステータス:")
+    print(f"   - LLM利用可能: {'✅' if llm_status['llm_available'] else '❌'}")
+    print(f"   - LLM有効: {'✅' if llm_status['llm_enabled'] else '❌'}")
+    print(f"   - 動作モード: {llm_status['mode']}")
     
     # サンプル社員の作成
     employee = create_sample_employee()
@@ -155,19 +162,53 @@ def demonstrate_mentor_agent():
         for challenge in growth_record.challenges_faced:
             print(f"   - {challenge}")
     
-    # 5. サポート提供
-    print(f"\n🤝 自律的サポート例:")
-    print("-" * 30)
+    # 5. サポート提供（LLM強化）
+    print(f"\n🤝 自律的サポート例（LLM強化）:")
+    print("-" * 40)
     
     support_types = ["skill_gap", "motivation", "communication"]
     for support_type in support_types:
         support_response = mentor.provide_support(employee, support_type)
-        print(f"\n{support_type.replace('_', ' ').title()}サポート:")
+        
+        support_type_jp = {
+            "skill_gap": "スキルギャップ",
+            "motivation": "モチベーション", 
+            "communication": "コミュニケーション"
+        }.get(support_type, support_type)
+        
+        print(f"\n{support_type_jp}サポート:")
+        
+        # LLMメッセージがある場合は表示
+        if support_response.get('support_message'):
+            print(f"   💬 AIメッセージ: {support_response['support_message'][:100]}...")
+            if support_response.get('message_source') == 'llm':
+                print(f"   📝 ソース: LLM生成")
+        
+        # ルールベースのアクション
+        print(f"   🔧 サポートアクション:")
         for action in support_response['support_provided'][:2]:
-            print(f"   - {action}")
+            print(f"      - {action}")
     
-    print(f"\n✅ デモンストレーション完了!")
+    # 6. LLMとルールベースの比較（利用可能な場合）
+    if llm_status['llm_available']:
+        print(f"\n🔄 LLMとルールベースの比較:")
+        print("-" * 40)
+        
+        # ルールベースモードでフィードバック生成
+        mentor.toggle_llm_mode(False)
+        rule_feedback = mentor.generate_feedback(employee)
+        
+        # LLMモードでフィードバック生成
+        mentor.toggle_llm_mode(True)
+        llm_feedback = mentor.generate_feedback(employee)
+        
+        print(f"ルールベース: {rule_feedback.summary}")
+        print(f"LLM生成: {llm_feedback.summary}")
+        print(f"信頼度比較: ルール({rule_feedback.confidence_level}) vs LLM({llm_feedback.confidence_level})")
+    
+    print(f"\n✅ LLM統合デモンストレーション完了!")
     print(f"📁 データは data/ ディレクトリに保存されています")
+    print(f"🎯 LLM機能により、より自然で個別化されたフィードバックを提供しています")
 
 if __name__ == "__main__":
     try:
