@@ -4,6 +4,16 @@ import uuid
 import json
 from pathlib import Path
 
+
+def safe_json_dumps(obj, **kwargs):
+    """datetime対応のJSONシリアライザー"""
+    def default_serializer(o):
+        if isinstance(o, datetime):
+            return o.isoformat()
+        raise TypeError(f"Object of type {type(o)} is not JSON serializable")
+    
+    return json.dumps(obj, default=default_serializer, **kwargs)
+
 from .base import BaseMentorAgent
 from ..models import (
     Employee, Feedback, GrowthRecord, 
@@ -11,6 +21,10 @@ from ..models import (
     SkillProgress, Milestone, MilestoneStatus,
     GrowthTrend
 )
+from ..services.llm_service import LLMService
+from ..services.autonomous_agent_service import AutonomousAgentService
+from ..services.knowledge_search_service import KnowledgeSearchService
+from ..services.task_planner_service import TaskPlannerService
 
 
 class MentorAgent(BaseMentorAgent):
@@ -18,6 +32,17 @@ class MentorAgent(BaseMentorAgent):
     
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         super().__init__(config)
+        self.llm_service = LLMService()
+        self.use_llm = config.get('use_llm', True) if config else True
+        
+        # 自律的エージェント機能の初期化
+        self.autonomous_agent = AutonomousAgentService()
+        self.knowledge_search = KnowledgeSearchService()
+        self.task_planner = TaskPlannerService()
+        
+        # 自律モードの設定
+        self.autonomous_mode = config.get('autonomous_mode', True) if config else True
+        self.auto_search = config.get('auto_search', True) if config else True
         
     def initialize(self):
         """エージェントの初期化"""
@@ -44,15 +69,33 @@ class MentorAgent(BaseMentorAgent):
         return analysis
     
     def generate_feedback(self, employee: Employee, context: Optional[Dict[str, Any]] = None) -> Feedback:
-        """個別化されたフィードバックを生成"""
+        """個別化されたフィードバックを生成（LLM + ルールベースハイブリッド）"""
         # 分析結果を取得
         analysis = self.analyze_employee(employee)
         
         # フィードバックタイプの決定
         feedback_type = self._determine_feedback_type(analysis)
         
-        # フィードバック内容の生成
-        feedback_content = self._create_feedback_content(employee, analysis, feedback_type)
+        # LLMを使用してフィードバック生成を試行
+        llm_content = None
+        if self.use_llm and self.llm_service.is_available():
+            try:
+                llm_content = self.llm_service.generate_personalized_feedback(
+                    employee, analysis, feedback_type
+                )
+                if llm_content:
+                    self.logger.info(f"Generated LLM feedback for {employee.name}")
+            except Exception as e:
+                self.logger.warning(f"LLM feedback generation failed, falling back to rule-based: {e}")
+        
+        # フィードバック内容の生成（LLMまたはルールベース）
+        if llm_content:
+            feedback_content = self._format_llm_feedback_content(llm_content, employee, analysis)
+        else:
+            feedback_content = self._create_feedback_content(employee, analysis, feedback_type)
+        
+        # 推奨事項の生成（LLMを優先、フォールバックでルールベース）
+        recommendations = self._generate_enhanced_recommendations(employee, analysis)
         
         # アクションアイテムの生成
         action_items = self._generate_action_items(employee, analysis)
@@ -60,20 +103,21 @@ class MentorAgent(BaseMentorAgent):
         feedback = Feedback(
             id=str(uuid.uuid4()),
             employee_id=employee.id,
-            mentor_id="mentor_agent_001",
+            mentor_id="mentor_agent_llm" if llm_content else "mentor_agent_rule",
             type=feedback_type,
             category=self._determine_feedback_category(employee),
             summary=feedback_content["summary"],
             detailed_feedback=feedback_content["detailed"],
             impact_score=feedback_content["impact_score"],
-            confidence_level=0.85,
+            confidence_level=0.95 if llm_content else 0.85,
             specific_examples=feedback_content["examples"],
             observed_behaviors=feedback_content["behaviors"],
-            recommendations=feedback_content["recommendations"],
+            recommendations=recommendations,
             action_items=action_items,
             skill_improvements=self._calculate_skill_improvements(employee),
             expected_timeline="30-60 days",
-            follow_up_required=len(action_items) > 0
+            follow_up_required=len(action_items) > 0,
+            is_automated=True
         )
         
         # フィードバックを保存
@@ -133,14 +177,27 @@ class MentorAgent(BaseMentorAgent):
         return growth_record
     
     def provide_support(self, employee: Employee, issue_type: str) -> Dict[str, Any]:
-        """状況に応じたサポートを提供"""
+        """状況に応じたサポートを提供（LLM強化）"""
         support_response = {
             "employee_id": employee.id,
             "issue_type": issue_type,
             "timestamp": datetime.now().isoformat(),
-            "support_provided": []
+            "support_provided": [],
+            "support_message": ""
         }
         
+        # LLMを使用したサポートメッセージ生成を試行
+        if self.use_llm and self.llm_service.is_available():
+            try:
+                llm_message = self.llm_service.generate_support_message(employee, issue_type)
+                if llm_message:
+                    support_response["support_message"] = llm_message
+                    support_response["message_source"] = "llm"
+                    self.logger.info(f"Generated LLM support message for {employee.name}, issue: {issue_type}")
+            except Exception as e:
+                self.logger.warning(f"LLM support message generation failed: {e}")
+        
+        # ルールベースのサポートアクション（従来の機能を維持）
         if issue_type == "skill_gap":
             support_response["support_provided"] = self._provide_skill_support(employee)
         elif issue_type == "motivation":
@@ -484,6 +541,69 @@ class MentorAgent(BaseMentorAgent):
         })
         return resources
     
+    # LLM統合用ヘルパーメソッド
+    def _format_llm_feedback_content(
+        self, 
+        llm_content: Dict[str, str], 
+        employee: Employee, 
+        analysis: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """LLMが生成したフィードバック内容をフォーマット"""
+        return {
+            "summary": llm_content.get("summary", f"{employee.name}さんへのフィードバック"),
+            "detailed": llm_content.get("detailed", "詳細な分析に基づくフィードバックです。"),
+            "impact_score": self.calculate_growth_score(employee),
+            "examples": [f"{s.name}で進歩を示しています" for s in employee.skills if s.progress_rate > 70],
+            "behaviors": employee.strengths[:3],
+            "recommendations": [llm_content.get("next_steps", "継続的な努力を続けてください。")],
+            "encouragement": llm_content.get("encouragement", "")
+        }
+    
+    def _generate_enhanced_recommendations(self, employee: Employee, analysis: Dict[str, Any]) -> List[str]:
+        """LLMと ルールベースを組み合わせた推奨事項生成"""
+        recommendations = []
+        
+        # LLMによる推奨事項生成を試行
+        if self.use_llm and self.llm_service.is_available():
+            try:
+                llm_recommendations = self.llm_service.generate_growth_recommendations(employee, analysis)
+                if llm_recommendations:
+                    recommendations.extend(llm_recommendations)
+                    self.logger.info(f"Generated {len(llm_recommendations)} LLM recommendations for {employee.name}")
+            except Exception as e:
+                self.logger.warning(f"LLM recommendations generation failed: {e}")
+        
+        # LLMが利用できない場合や不十分な場合はルールベースを使用
+        if len(recommendations) < 3:
+            rule_based_recommendations = self._generate_recommendations(employee)
+            recommendations.extend(rule_based_recommendations)
+        
+        # 重複を除去し、最大5つに制限
+        unique_recommendations = []
+        seen = set()
+        for rec in recommendations:
+            if rec not in seen:
+                unique_recommendations.append(rec)
+                seen.add(rec)
+                if len(unique_recommendations) >= 5:
+                    break
+        
+        return unique_recommendations
+    
+    def toggle_llm_mode(self, use_llm: bool):
+        """LLMモードの切り替え"""
+        self.use_llm = use_llm
+        mode = "LLMモード" if use_llm else "ルールベースモード"
+        self.logger.info(f"メンターエージェントを{mode}に切り替えました")
+    
+    def get_llm_status(self) -> Dict[str, Any]:
+        """LLMの状態を取得"""
+        return {
+            "llm_available": self.llm_service.is_available(),
+            "llm_enabled": self.use_llm,
+            "mode": "hybrid" if self.use_llm and self.llm_service.is_available() else "rule-based"
+        }
+    
     def load_employee(self, employee_id: str) -> Optional[Employee]:
         """社員データを読み込み"""
         employee_path = self.data_dir / "employees" / f"{employee_id}.json"
@@ -511,3 +631,233 @@ class MentorAgent(BaseMentorAgent):
                 # Pydantic v1
                 data = employee.dict()
             json.dump(data, f, ensure_ascii=False, indent=2, default=str)
+    
+    # 新しい自律的エージェント機能
+    
+    async def autonomous_mentee_support(self, employee: Employee) -> Dict[str, Any]:
+        """
+        🤖 自律的メンティ支援の実行
+        LLMを中心とした完全自律的な成長支援プロセス
+        """
+        if self.autonomous_mode:
+            self.logger.info(f"🚀 自律的メンティ支援を開始: {employee.name}")
+            return await self.autonomous_agent.autonomous_mentee_support(employee)
+        else:
+            # 従来の方式にフォールバック
+            return self._traditional_support_process(employee)
+    
+    async def dynamic_knowledge_search(self, employee: Employee, specific_need: str) -> Dict[str, Any]:
+        """
+        🔍 動的知識検索
+        メンティのニーズに応じた自動情報収集
+        """
+        if not self.auto_search:
+            return {"message": "自動検索は無効化されています"}
+        
+        self.logger.info(f"🔍 {employee.name}さんのために動的知識検索を実行: {specific_need}")
+        
+        # 社員コンテキストの構築
+        employee_context = {
+            "name": employee.name,
+            "department": employee.department.value,
+            "skills": [skill.name for skill in employee.skills],
+            "strengths": employee.strengths,
+            "improvement_areas": employee.improvement_areas,
+            "learning_pace": employee.learning_pace,
+            "preferred_learning_style": employee.preferred_learning_style
+        }
+        
+        # コンテキスト考慮型検索の実行
+        search_results = await self.knowledge_search.contextual_knowledge_search(
+            employee_context, specific_need
+        )
+        
+        return search_results
+    
+    async def adaptive_growth_planning(self, employee: Employee, timeframe: int = 90) -> Dict[str, Any]:
+        """
+        📋 適応的成長計画の作成
+        LLMによるタスク分解と個別最適化
+        """
+        self.logger.info(f"📋 {employee.name}さんの適応的成長計画を作成中... (期間: {timeframe}日)")
+        
+        # 現状分析の実行
+        analysis = self.analyze_employee(employee)
+        
+        # LLM中心の個別最適化戦略の作成
+        growth_strategy = await self.task_planner.create_personalized_growth_strategy(
+            employee, analysis
+        )
+        
+        # 適応的リソース発見
+        learning_goal = f"{employee.name}さんの技能向上"
+        learner_profile = {
+            "skill_level": "intermediate",  # 動的に決定
+            "learning_style": employee.preferred_learning_style,
+            "pace": employee.learning_pace
+        }
+        
+        resources = await self.knowledge_search.adaptive_resource_discovery(
+            learning_goal, learner_profile
+        )
+        
+        # 統合された成長計画
+        integrated_plan = {
+            "employee_id": employee.id,
+            "timeframe_days": timeframe,
+            "analysis": analysis,
+            "growth_strategy": growth_strategy,
+            "recommended_resources": resources,
+            "created_at": datetime.now().isoformat(),
+            "autonomous_features": {
+                "auto_adaptation": True,
+                "dynamic_milestones": True,
+                "risk_monitoring": True,
+                "progress_tracking": True
+            }
+        }
+        
+        return integrated_plan
+    
+    async def intelligent_feedback_generation(self, employee: Employee, context: Optional[Dict[str, Any]] = None) -> Feedback:
+        """
+        💬 知的フィードバック生成
+        動的情報収集 + LLM分析による高度フィードバック
+        """
+        self.logger.info(f"💬 {employee.name}さんの知的フィードバックを生成中...")
+        
+        # フェーズ1: 動的情報収集
+        if self.auto_search:
+            search_context = f"{employee.name}の成長に関する最新情報"
+            knowledge_results = await self.dynamic_knowledge_search(employee, search_context)
+        else:
+            knowledge_results = {"message": "自動検索無効"}
+        
+        # フェーズ2: 深層分析
+        analysis = self.analyze_employee(employee)
+        
+        # フェーズ3: LLM統合フィードバック生成
+        enhanced_context = {
+            "original_context": context or {},
+            "knowledge_results": knowledge_results,
+            "analysis": analysis,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        # 既存のフィードバック生成を拡張
+        feedback = self.generate_feedback(employee, enhanced_context)
+        
+        # 知的機能マーク
+        feedback.mentor_id = "autonomous_mentor_agent"
+        feedback.is_automated = True
+        feedback.confidence_level = 0.95 if self.use_llm else 0.75
+        
+        return feedback
+    
+    async def proactive_support_detection(self, employee: Employee) -> Dict[str, Any]:
+        """
+        🎯 予防的サポート検出
+        潜在的な問題を予測し、事前にサポートを提供
+        """
+        self.logger.info(f"🎯 {employee.name}さんの予防的サポートを検出中...")
+        
+        # 現状分析
+        analysis = self.analyze_employee(employee)
+        
+        # LLMによる潜在的問題の予測
+        if self.llm_service.is_available():
+            prediction_prompt = f"""
+            {employee.name}さんの状況を分析し、今後30日以内に発生する可能性がある課題や問題を予測してください。
+            
+            現状分析: {safe_json_dumps(analysis, ensure_ascii=False, indent=2)}
+            
+            以下の観点で予測:
+            - 学習ペースの変化
+            - モチベーション低下のリスク
+            - スキルギャップの拡大
+            - 外部要因の影響
+            
+            予測結果と推奨される予防的アクションをJSON形式で返してください。
+            """
+            
+            try:
+                predictions = await self.llm_service.predict_challenges(prediction_prompt)
+                if isinstance(predictions, str):
+                    predictions = json.loads(predictions)
+            except:
+                predictions = {"predicted_challenges": ["学習ペースの維持"], "preventive_actions": ["定期的なチェックイン"]}
+        else:
+            predictions = {"predicted_challenges": ["学習ペースの維持"], "preventive_actions": ["定期的なチェックイン"]}
+        
+        # 予防的サポートの生成
+        support_actions = []
+        for challenge in predictions.get("predicted_challenges", []):
+            support = self.provide_support(employee, "proactive_prevention")
+            support["target_challenge"] = challenge
+            support_actions.append(support)
+        
+        return {
+            "employee_id": employee.id,
+            "predictions": predictions,
+            "proactive_support": support_actions,
+            "confidence_score": 0.8,
+            "next_check_date": (datetime.now() + timedelta(days=7)).isoformat()
+        }
+    
+    # 制御メソッド
+    
+    def enable_autonomous_mode(self, enable: bool = True):
+        """自律モードの有効/無効"""
+        self.autonomous_mode = enable
+        mode = "有効" if enable else "無効"
+        self.logger.info(f"🤖 自律モードを{mode}にしました")
+    
+    def enable_auto_search(self, enable: bool = True):
+        """自動検索の有効/無効"""
+        self.auto_search = enable
+        mode = "有効" if enable else "無効"
+        self.logger.info(f"🔍 自動検索を{mode}にしました")
+    
+    def get_autonomous_status(self) -> Dict[str, Any]:
+        """自律的エージェントの状態取得"""
+        llm_status = self.get_llm_status()
+        return {
+            "autonomous_mode": self.autonomous_mode,
+            "auto_search": self.auto_search,
+            "llm_status": llm_status,
+            "available_features": [
+                "autonomous_mentee_support",
+                "dynamic_knowledge_search", 
+                "adaptive_growth_planning",
+                "intelligent_feedback_generation",
+                "proactive_support_detection"
+            ],
+            "mode_description": self._get_mode_description()
+        }
+    
+    # ヘルパーメソッド
+    
+    def _traditional_support_process(self, employee: Employee) -> Dict[str, Any]:
+        """従来の支援プロセス（フォールバック）"""
+        analysis = self.analyze_employee(employee)
+        feedback = self.generate_feedback(employee)
+        growth_plan = self.create_growth_plan(employee)
+        
+        return {
+            "mode": "traditional",
+            "analysis": analysis,
+            "feedback": feedback.dict() if hasattr(feedback, 'dict') else feedback.__dict__,
+            "growth_plan": growth_plan,
+            "autonomous_features": False
+        }
+    
+    def _get_mode_description(self) -> str:
+        """動作モードの説明"""
+        if self.autonomous_mode and self.use_llm:
+            return "完全自律モード: LLM中心の動的分析・計画・実行"
+        elif self.autonomous_mode:
+            return "自律モード: ルールベース中心の自動化"
+        elif self.use_llm:
+            return "LLM支援モード: 手動制御 + AI分析"
+        else:
+            return "基本モード: ルールベースの従来型支援"
