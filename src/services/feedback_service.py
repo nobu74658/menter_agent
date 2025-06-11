@@ -1,285 +1,217 @@
-from typing import List, Dict, Any, Optional
-from datetime import datetime
-import random
+from typing import List, Dict, Any
+from datetime import datetime, timedelta
 
-from ..models import Employee, Feedback, FeedbackType, Priority
+from ..models import Employee, Feedback, FeedbackType, Priority, ActionItem
 
 
 class FeedbackService:
-    """フィードバック生成サービス"""
+    """フィードバック生成・管理サービス"""
     
-    def __init__(self):
-        self.feedback_templates = self._load_feedback_templates()
-    
-    def generate_strength_feedback(self, employee: Employee) -> Dict[str, Any]:
-        """強みに関するフィードバックを生成"""
-        if not employee.strengths:
-            return {
-                "type": "general",
-                "message": "Continue to develop and identify your unique strengths."
-            }
+    def generate_personalized_feedback(self, employee: Employee, context: Dict[str, Any]) -> Dict[str, Any]:
+        """個人に合わせたフィードバックを生成"""
+        feedback_style = self._determine_feedback_style(employee)
+        content = self._create_feedback_content(employee, context, feedback_style)
         
-        strength_feedback = {
-            "type": "strength_recognition",
-            "highlights": employee.strengths[:3],
-            "message": self._create_strength_message(employee.strengths),
-            "recommendations": self._suggest_strength_leverage(employee.strengths)
-        }
-        
-        return strength_feedback
-    
-    def generate_improvement_feedback(self, employee: Employee) -> Dict[str, Any]:
-        """改善点に関するフィードバックを生成"""
-        if not employee.improvement_areas:
-            return {
-                "type": "general",
-                "message": "Keep pushing yourself to new challenges."
-            }
-        
-        improvement_feedback = {
-            "type": "constructive",
-            "focus_areas": employee.improvement_areas[:3],
-            "message": self._create_improvement_message(employee.improvement_areas),
-            "action_plan": self._create_improvement_plan(employee.improvement_areas),
-            "resources": self._suggest_resources(employee.improvement_areas)
-        }
-        
-        return improvement_feedback
-    
-    def generate_contextual_feedback(self, employee: Employee, context: str) -> Dict[str, Any]:
-        """状況に応じたフィードバックを生成"""
-        feedback_map = {
-            "project_completion": self._generate_project_feedback,
-            "skill_assessment": self._generate_skill_feedback,
-            "team_collaboration": self._generate_team_feedback,
-            "deadline_miss": self._generate_deadline_feedback,
-            "innovation": self._generate_innovation_feedback
-        }
-        
-        generator = feedback_map.get(context, self._generate_general_feedback)
-        return generator(employee)
-    
-    def personalize_feedback_tone(self, feedback: str, employee: Employee) -> str:
-        """社員の特性に合わせてフィードバックのトーンを調整"""
-        
-        # 学習ペースに基づく調整
-        if employee.learning_pace < 0.8:
-            # より励ましのトーン
-            feedback = feedback.replace("should", "could consider")
-            feedback = feedback.replace("need to", "might benefit from")
-            feedback = f"Take your time. {feedback}"
-        elif employee.learning_pace > 1.5:
-            # よりチャレンジングなトーン
-            feedback = feedback.replace("could", "should")
-            feedback = f"{feedback} Given your rapid progress, consider taking on additional challenges."
-        
-        # 学習スタイルに基づく調整
-        if employee.preferred_learning_style == "visual":
-            feedback += " Visual aids and diagrams might help reinforce these concepts."
-        elif employee.preferred_learning_style == "hands-on":
-            feedback += " Practice these concepts through real projects for better retention."
-        
-        return feedback
-    
-    def create_feedback_summary(self, feedbacks: List[Feedback]) -> Dict[str, Any]:
-        """複数のフィードバックからサマリーを作成"""
-        if not feedbacks:
-            return {"status": "no_feedback_available"}
-        
-        summary = {
-            "total_feedbacks": len(feedbacks),
-            "feedback_types": self._count_feedback_types(feedbacks),
-            "common_themes": self._identify_common_themes(feedbacks),
-            "average_impact_score": self._calculate_average_impact(feedbacks),
-            "action_items_pending": self._count_pending_actions(feedbacks),
-            "key_recommendations": self._extract_key_recommendations(feedbacks)
-        }
-        
-        return summary
-    
-    def _load_feedback_templates(self) -> Dict[str, List[str]]:
-        """フィードバックテンプレートを読み込み"""
         return {
-            "positive": [
-                "Excellent work on {achievement}. Your {strength} really made a difference.",
-                "Your progress in {area} has been remarkable. Keep up the great work!",
-                "You've shown exceptional {quality} in your recent work."
-            ],
-            "constructive": [
-                "To further develop {skill}, consider {action}.",
-                "I noticed some challenges with {area}. Let's work on {solution}.",
-                "Your {area} could benefit from {improvement}."
-            ],
-            "developmental": [
-                "For your next growth phase, focus on {objective}.",
-                "To reach the next level, developing {skill} will be crucial.",
-                "Consider expanding your expertise in {area}."
-            ]
+            "style": feedback_style,
+            "content": content,
+            "delivery_method": self._recommend_delivery_method(employee),
+            "timing": self._suggest_optimal_timing(employee)
         }
     
-    def _create_strength_message(self, strengths: List[str]) -> str:
-        """強みメッセージを作成"""
-        if len(strengths) == 1:
-            return f"Your {strengths[0]} is a significant asset to the team."
-        elif len(strengths) == 2:
-            return f"Your {strengths[0]} and {strengths[1]} are valuable strengths."
+    def create_action_plan(self, employee: Employee, feedback_analysis: Dict[str, Any]) -> List[ActionItem]:
+        """具体的なアクションプランを作成"""
+        action_items = []
+        
+        # 改善が必要なスキルに対するアクション
+        weak_skills = [s for s in employee.skills if s.progress_rate < 50]
+        for skill in weak_skills[:3]:  # 上位3つに絞る
+            action_items.append(ActionItem(
+                description=f"Improve {skill.name} through targeted practice",
+                due_date=datetime.now() + timedelta(days=30),
+                priority=Priority.HIGH if skill.progress_rate < 30 else Priority.MEDIUM,
+                resources=self._get_skill_resources(skill.name),
+                estimated_hours=20.0
+            ))
+        
+        # 目標に対するアクション
+        if not employee.current_objectives:
+            action_items.append(ActionItem(
+                description="Set clear learning objectives for the next month",
+                due_date=datetime.now() + timedelta(days=7),
+                priority=Priority.HIGH,
+                resources=["Goal setting template", "Career development guide"],
+                estimated_hours=2.0
+            ))
+        
+        return action_items
+    
+    def adjust_communication_style(self, employee: Employee, base_message: str) -> str:
+        """コミュニケーションスタイルを調整"""
+        if employee.learning_pace < 0.7:
+            # ゆっくり学習する人には丁寧で段階的な説明
+            return self._make_supportive_tone(base_message)
+        elif employee.learning_pace > 1.3:
+            # 速く学習する人には簡潔で直接的な説明
+            return self._make_direct_tone(base_message)
         else:
-            return f"Your key strengths include {', '.join(strengths[:2])}, and {strengths[2]}."
+            # 標準的な学習ペースの人にはバランスの取れた説明
+            return self._make_balanced_tone(base_message)
     
-    def _suggest_strength_leverage(self, strengths: List[str]) -> List[str]:
-        """強みを活かす方法を提案"""
-        suggestions = []
-        for strength in strengths[:3]:
-            if "communication" in strength.lower():
-                suggestions.append("Consider leading team presentations or client meetings")
-            elif "technical" in strength.lower():
-                suggestions.append("Mentor junior developers on technical topics")
-            elif "problem" in strength.lower():
-                suggestions.append("Take ownership of complex problem-solving tasks")
-            else:
-                suggestions.append(f"Find opportunities to apply your {strength} in new projects")
+    def generate_encouragement(self, employee: Employee) -> str:
+        """個人に合わせた励ましのメッセージを生成"""
+        strengths = employee.strengths
+        recent_achievements = self._identify_recent_achievements(employee)
         
-        return suggestions
+        if strengths:
+            strength_message = f"Your {strengths[0]} continues to be a valuable asset."
+        else:
+            strength_message = "You're showing consistent effort in your development."
+        
+        if recent_achievements:
+            achievement_message = f" Your recent progress in {recent_achievements[0]} is commendable."
+        else:
+            achievement_message = " Keep up the steady progress!"
+        
+        return strength_message + achievement_message
     
-    def _create_improvement_message(self, areas: List[str]) -> str:
-        """改善メッセージを作成"""
-        primary_area = areas[0]
-        return f"Focusing on {primary_area} will significantly enhance your overall performance. " \
-               f"This is a common growth area that many successful professionals have worked through."
-    
-    def _create_improvement_plan(self, areas: List[str]) -> List[Dict[str, str]]:
-        """改善計画を作成"""
-        plan = []
-        for area in areas[:3]:
-            plan.append({
-                "area": area,
-                "short_term": f"Week 1-2: Understand the basics of {area}",
-                "medium_term": f"Week 3-4: Practice {area} in controlled settings",
-                "long_term": f"Month 2+: Apply {area} in real projects"
-            })
-        return plan
-    
-    def _suggest_resources(self, areas: List[str]) -> List[Dict[str, str]]:
-        """リソースを提案"""
-        resources = []
-        for area in areas[:2]:
-            resources.extend([
-                {
-                    "type": "course",
-                    "title": f"Mastering {area}",
-                    "format": "online"
-                },
-                {
-                    "type": "book",
-                    "title": f"The Complete Guide to {area}",
-                    "format": "digital/physical"
-                }
-            ])
-        return resources
-    
-    def _generate_project_feedback(self, employee: Employee) -> Dict[str, Any]:
-        """プロジェクト完了フィードバック"""
-        return {
-            "type": "project_completion",
-            "message": "Congratulations on completing the project!",
-            "strengths_demonstrated": random.sample(employee.strengths, min(2, len(employee.strengths))) if employee.strengths else [],
-            "lessons_learned": ["Time management", "Team coordination", "Technical implementation"],
-            "next_steps": ["Apply learnings to next project", "Share knowledge with team"]
-        }
-    
-    def _generate_skill_feedback(self, employee: Employee) -> Dict[str, Any]:
-        """スキル評価フィードバック"""
-        improving_skills = [s.name for s in employee.skills if 40 < s.progress_rate < 70]
-        strong_skills = [s.name for s in employee.skills if s.progress_rate >= 70]
+    def suggest_feedback_frequency(self, employee: Employee) -> Dict[str, Any]:
+        """フィードバック頻度を提案"""
+        # 学習ペースと現在のパフォーマンスに基づいて頻度を調整
+        if employee.learning_pace < 0.6 or len(employee.improvement_areas) > 4:
+            frequency = "weekly"
+            reasoning = "Frequent check-ins will help maintain momentum"
+        elif employee.learning_pace > 1.2 and len(employee.improvement_areas) < 2:
+            frequency = "monthly"
+            reasoning = "Self-directed learning with periodic reviews"
+        else:
+            frequency = "bi-weekly"
+            reasoning = "Regular support with room for independence"
         
         return {
-            "type": "skill_assessment",
-            "strong_skills": strong_skills,
-            "improving_skills": improving_skills,
-            "focus_recommendation": improving_skills[0] if improving_skills else "Continue balanced development"
+            "recommended_frequency": frequency,
+            "reasoning": reasoning,
+            "next_review_date": self._calculate_next_review_date(frequency)
         }
     
-    def _generate_team_feedback(self, employee: Employee) -> Dict[str, Any]:
-        """チーム協力フィードバック"""
-        return {
-            "type": "team_collaboration",
-            "collaboration_score": random.randint(70, 95),
-            "positive_behaviors": ["Active participation", "Supportive attitude", "Clear communication"],
-            "enhancement_areas": ["Cross-functional collaboration", "Conflict resolution"]
+    def _determine_feedback_style(self, employee: Employee) -> str:
+        """フィードバックスタイルを決定"""
+        if employee.learning_pace < 0.7:
+            return "supportive_detailed"
+        elif employee.overall_rating and employee.overall_rating > 4.0:
+            return "challenging_growth"
+        elif len(employee.improvement_areas) > 3:
+            return "structured_guidance"
+        else:
+            return "balanced_encouragement"
+    
+    def _create_feedback_content(self, employee: Employee, context: Dict[str, Any], style: str) -> Dict[str, str]:
+        """スタイルに応じたフィードバック内容を作成"""
+        if style == "supportive_detailed":
+            return {
+                "opening": f"Hi {employee.name}, I want to recognize your dedication to learning.",
+                "main_message": "Let's work together to break down your goals into manageable steps.",
+                "specific_guidance": "I've identified specific areas where we can focus your efforts.",
+                "closing": "Remember, progress takes time, and you're doing great!"
+            }
+        elif style == "challenging_growth":
+            return {
+                "opening": f"{employee.name}, your strong performance opens up new opportunities.",
+                "main_message": "I'd like to challenge you with some advanced objectives.",
+                "specific_guidance": "Here are areas where you can push your limits.",
+                "closing": "I'm confident you can reach the next level!"
+            }
+        elif style == "structured_guidance":
+            return {
+                "opening": f"Hello {employee.name}, let's focus on creating a clear path forward.",
+                "main_message": "I've prioritized your development areas based on impact.",
+                "specific_guidance": "Following this structured approach will maximize your progress.",
+                "closing": "Consistency in these areas will lead to significant improvement."
+            }
+        else:  # balanced_encouragement
+            return {
+                "opening": f"Hi {employee.name}, you're making steady progress!",
+                "main_message": "Let's build on your strengths while addressing key growth areas.",
+                "specific_guidance": "I have some targeted suggestions for your development.",
+                "closing": "Keep up the excellent work!"
+            }
+    
+    def _recommend_delivery_method(self, employee: Employee) -> str:
+        """フィードバック提供方法を推奨"""
+        if employee.preferred_learning_style == "visual":
+            return "written_with_diagrams"
+        elif employee.preferred_learning_style == "auditory":
+            return "verbal_discussion"
+        elif employee.preferred_learning_style == "kinesthetic":
+            return "hands_on_demonstration"
+        else:
+            return "combined_approach"
+    
+    def _suggest_optimal_timing(self, employee: Employee) -> str:
+        """最適なタイミングを提案"""
+        if employee.learning_pace < 0.7:
+            return "end_of_week"  # ストレスの少ない時間
+        else:
+            return "beginning_of_week"  # 行動計画を立てやすい時間
+    
+    def _get_skill_resources(self, skill_name: str) -> List[str]:
+        """スキル別のリソースを取得"""
+        resource_map = {
+            "communication": ["Public speaking course", "Writing workshop", "Active listening guide"],
+            "programming": ["Coding practice platform", "Technical documentation", "Code review sessions"],
+            "project_management": ["PM certification course", "Project planning templates", "Agile methodology guide"],
+            "leadership": ["Leadership development program", "Mentoring guide", "Team building exercises"]
         }
-    
-    def _generate_deadline_feedback(self, employee: Employee) -> Dict[str, Any]:
-        """締切遅延フィードバック"""
-        return {
-            "type": "deadline_miss",
-            "message": "Let's discuss the challenges you faced with the recent deadline.",
-            "root_causes": ["Time estimation", "Task prioritization", "Resource planning"],
-            "prevention_strategies": [
-                "Break down tasks into smaller milestones",
-                "Regular progress check-ins",
-                "Early escalation of blockers"
-            ]
-        }
-    
-    def _generate_innovation_feedback(self, employee: Employee) -> Dict[str, Any]:
-        """イノベーションフィードバック"""
-        return {
-            "type": "innovation",
-            "message": "Your innovative approach shows great initiative!",
-            "innovation_aspects": ["Creative problem-solving", "New perspective", "Risk-taking"],
-            "encouragement": "Continue exploring new ideas while balancing with execution"
-        }
-    
-    def _generate_general_feedback(self, employee: Employee) -> Dict[str, Any]:
-        """一般的なフィードバック"""
-        return {
-            "type": "general",
-            "message": f"Keep up the good work, {employee.name}!",
-            "overall_performance": "satisfactory",
-            "continue_doing": employee.strengths[:2] if employee.strengths else ["Current efforts"],
-            "consider_improving": employee.improvement_areas[:2] if employee.improvement_areas else ["Seek new challenges"]
-        }
-    
-    def _count_feedback_types(self, feedbacks: List[Feedback]) -> Dict[str, int]:
-        """フィードバックタイプをカウント"""
-        type_counts = {}
-        for feedback in feedbacks:
-            type_counts[feedback.type.value] = type_counts.get(feedback.type.value, 0) + 1
-        return type_counts
-    
-    def _identify_common_themes(self, feedbacks: List[Feedback]) -> List[str]:
-        """共通テーマを特定"""
-        themes = []
-        categories = {}
         
-        for feedback in feedbacks:
-            categories[feedback.category] = categories.get(feedback.category, 0) + 1
+        # キーワードマッチングで適切なリソースを選択
+        for key, resources in resource_map.items():
+            if key.lower() in skill_name.lower():
+                return resources
         
-        # 最も頻繁なカテゴリーをテーマとして返す
-        sorted_categories = sorted(categories.items(), key=lambda x: x[1], reverse=True)
-        return [cat[0] for cat in sorted_categories[:3]]
+        return ["Online course", "Practice exercises", "Mentorship session"]
     
-    def _calculate_average_impact(self, feedbacks: List[Feedback]) -> float:
-        """平均インパクトスコアを計算"""
-        if not feedbacks:
-            return 0.0
+    def _make_supportive_tone(self, message: str) -> str:
+        """サポート的なトーンに調整"""
+        supportive_phrases = [
+            "I understand this can be challenging, and that's completely normal.",
+            "Let's take this step by step.",
+            "You're making progress, even if it doesn't always feel that way."
+        ]
+        return f"{supportive_phrases[0]} {message}"
+    
+    def _make_direct_tone(self, message: str) -> str:
+        """直接的なトーンに調整"""
+        return f"Here's what you need to focus on: {message}"
+    
+    def _make_balanced_tone(self, message: str) -> str:
+        """バランスの取れたトーンに調整"""
+        return f"You're doing well overall. {message} This will help you continue growing."
+    
+    def _identify_recent_achievements(self, employee: Employee) -> List[str]:
+        """最近の成果を特定"""
+        achievements = []
         
-        total_impact = sum(f.impact_score for f in feedbacks)
-        return round(total_impact / len(feedbacks), 2)
-    
-    def _count_pending_actions(self, feedbacks: List[Feedback]) -> int:
-        """保留中のアクションアイテムをカウント"""
-        pending_count = 0
-        for feedback in feedbacks:
-            pending_count += sum(1 for action in feedback.action_items if not action.completed)
-        return pending_count
-    
-    def _extract_key_recommendations(self, feedbacks: List[Feedback]) -> List[str]:
-        """主要な推奨事項を抽出"""
-        all_recommendations = []
-        for feedback in feedbacks:
-            all_recommendations.extend(feedback.recommendations)
+        # 高い進捗率のスキルを成果として認識
+        for skill in employee.skills:
+            if skill.progress_rate > 70:
+                achievements.append(skill.name)
         
-        # 重複を除いて最初の5つを返す
-        unique_recommendations = list(dict.fromkeys(all_recommendations))
-        return unique_recommendations[:5]
+        # 完了したトレーニングも成果として認識
+        if employee.completed_trainings:
+            achievements.extend(employee.completed_trainings[-2:])  # 最新2つ
+        
+        return achievements[:3]  # 上位3つまで
+    
+    def _calculate_next_review_date(self, frequency: str) -> str:
+        """次のレビュー日を計算"""
+        now = datetime.now()
+        if frequency == "weekly":
+            next_date = now + timedelta(weeks=1)
+        elif frequency == "bi-weekly":
+            next_date = now + timedelta(weeks=2)
+        elif frequency == "monthly":
+            next_date = now + timedelta(weeks=4)
+        else:
+            next_date = now + timedelta(weeks=2)  # デフォルト
+        
+        return next_date.isoformat()
