@@ -64,14 +64,14 @@ class FeedbackService:
         recent_achievements = self._identify_recent_achievements(employee)
         
         if strengths:
-            strength_message = f"Your {strengths[0]} continues to be a valuable asset."
+            strength_message = f"あなたの「{strengths[0]}」は引き続き貴重な資質です。"
         else:
-            strength_message = "You're showing consistent effort in your development."
+            strength_message = "あなたは成長に向けて継続的な努力を示しています。"
         
         if recent_achievements:
-            achievement_message = f" Your recent progress in {recent_achievements[0]} is commendable."
+            achievement_message = f"{recent_achievements[0]}での最近の進歩は素晴らしいものです。"
         else:
-            achievement_message = " Keep up the steady progress!"
+            achievement_message = "この調子で着実に進歩を続けてください！"
         
         return strength_message + achievement_message
     
@@ -80,13 +80,13 @@ class FeedbackService:
         # 学習ペースと現在のパフォーマンスに基づいて頻度を調整
         if employee.learning_pace < 0.6 or len(employee.improvement_areas) > 4:
             frequency = "weekly"
-            reasoning = "Frequent check-ins will help maintain momentum"
+            reasoning = "頻繁なチェックインが継続的な成長を支援します"
         elif employee.learning_pace > 1.2 and len(employee.improvement_areas) < 2:
             frequency = "monthly"
-            reasoning = "Self-directed learning with periodic reviews"
+            reasoning = "自律的な学習と定期的なレビューが適しています"
         else:
             frequency = "bi-weekly"
-            reasoning = "Regular support with room for independence"
+            reasoning = "独立性を保ちつつ定期的なサポートを提供します"
         
         return {
             "recommended_frequency": frequency,
@@ -109,31 +109,31 @@ class FeedbackService:
         """スタイルに応じたフィードバック内容を作成"""
         if style == "supportive_detailed":
             return {
-                "opening": f"Hi {employee.name}, I want to recognize your dedication to learning.",
-                "main_message": "Let's work together to break down your goals into manageable steps.",
-                "specific_guidance": "I've identified specific areas where we can focus your efforts.",
-                "closing": "Remember, progress takes time, and you're doing great!"
+                "opening": f"{employee.name}さん、学習への献身的な取り組みを評価しています。",
+                "main_message": "目標を達成可能なステップに分けて、一緒に取り組んでいきましょう。",
+                "specific_guidance": "あなたの努力を集中させるべき具体的な領域を特定しました。",
+                "closing": "成長には時間がかかることを覚えておいてください。あなたは素晴らしい取り組みをしています！"
             }
         elif style == "challenging_growth":
             return {
-                "opening": f"{employee.name}, your strong performance opens up new opportunities.",
-                "main_message": "I'd like to challenge you with some advanced objectives.",
-                "specific_guidance": "Here are areas where you can push your limits.",
-                "closing": "I'm confident you can reach the next level!"
+                "opening": f"{employee.name}さん、あなたの優れたパフォーマンスが新たな機会を開いています。",
+                "main_message": "より高度な目標に挑戦していただきたいと思います。",
+                "specific_guidance": "あなたの限界を押し広げることができる領域をご紹介します。",
+                "closing": "あなたなら次のレベルに到達できると確信しています！"
             }
         elif style == "structured_guidance":
             return {
-                "opening": f"Hello {employee.name}, let's focus on creating a clear path forward.",
-                "main_message": "I've prioritized your development areas based on impact.",
-                "specific_guidance": "Following this structured approach will maximize your progress.",
-                "closing": "Consistency in these areas will lead to significant improvement."
+                "opening": f"{employee.name}さん、明確な前進の道筋を作ることに焦点を当てましょう。",
+                "main_message": "影響度に基づいて開発領域の優先順位を付けました。",
+                "specific_guidance": "この構造化されたアプローチに従うことで、進歩が最大化されます。",
+                "closing": "これらの領域での一貫性が大幅な改善につながります。"
             }
         else:  # balanced_encouragement
             return {
-                "opening": f"Hi {employee.name}, you're making steady progress!",
-                "main_message": "Let's build on your strengths while addressing key growth areas.",
-                "specific_guidance": "I have some targeted suggestions for your development.",
-                "closing": "Keep up the excellent work!"
+                "opening": f"{employee.name}さん、着実な進歩を続けています！",
+                "main_message": "強みを活かしながら、重要な成長領域に取り組んでいきましょう。",
+                "specific_guidance": "あなたの成長のための具体的な提案があります。",
+                "closing": "この調子で素晴らしい取り組みを続けてください！"
             }
     
     def _recommend_delivery_method(self, employee: Employee) -> str:

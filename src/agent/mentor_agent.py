@@ -188,19 +188,19 @@ class MentorAgent(BaseMentorAgent):
     def _identify_risk_factors(self, employee: Employee) -> List[str]:
         risks = []
         if employee.learning_pace < 0.5:
-            risks.append("Very slow learning pace")
+            risks.append("学習ペースが著しく遅い状況です")
         if len(employee.improvement_areas) > 5:
-            risks.append("Multiple improvement areas")
+            risks.append("改善が必要な領域が多数あります")
         if not employee.current_objectives:
-            risks.append("No clear objectives set")
+            risks.append("明確な目標が設定されていません")
         return risks
     
     def _generate_recommendations(self, employee: Employee) -> List[str]:
         recommendations = []
         for area in employee.improvement_areas[:3]:  # Top 3 areas
-            recommendations.append(f"Focus on improving {area}")
+            recommendations.append(f"{area}の向上に重点的に取り組みましょう")
         if employee.learning_pace < 1.0:
-            recommendations.append("Consider adjusting learning approach")
+            recommendations.append("学習アプローチの調整を検討してください")
         return recommendations
     
     def _determine_feedback_type(self, analysis: Dict[str, Any]) -> FeedbackType:
@@ -213,12 +213,28 @@ class MentorAgent(BaseMentorAgent):
     
     def _create_feedback_content(self, employee: Employee, analysis: Dict[str, Any], 
                                 feedback_type: FeedbackType) -> Dict[str, Any]:
+        # 総合評価の日本語変換
+        assessment_map = {
+            "Excellent": "優秀",
+            "Good": "良好", 
+            "Satisfactory": "普通",
+            "Needs Improvement": "要改善"
+        }
+        trajectory_map = {
+            "Accelerated": "加速的",
+            "Normal": "標準的",
+            "Slow": "緩やか"
+        }
+        
+        assessment_jp = assessment_map.get(analysis['overall_assessment'], analysis['overall_assessment'])
+        trajectory_jp = trajectory_map.get(analysis['growth_trajectory'], analysis['growth_trajectory'])
+        
         return {
-            "summary": f"Performance feedback for {employee.name}",
-            "detailed": f"Based on analysis, your overall performance is {analysis['overall_assessment']}. "
-                       f"Your growth trajectory appears to be {analysis['growth_trajectory']}.",
+            "summary": f"{employee.name}さんへのフィードバック",
+            "detailed": f"分析の結果、あなたの総合的なパフォーマンスは「{assessment_jp}」です。"
+                       f"成長の軌道は「{trajectory_jp}」と評価されます。",
             "impact_score": self.calculate_growth_score(employee),
-            "examples": [f"Demonstrated progress in {s.name}" for s in employee.skills if s.progress_rate > 70],
+            "examples": [f"{s.name}で進歩を示しています" for s in employee.skills if s.progress_rate > 70],
             "behaviors": employee.strengths[:3],
             "recommendations": analysis["recommendations"]
         }
@@ -367,14 +383,14 @@ class MentorAgent(BaseMentorAgent):
         achievements = []
         for skill in employee.skills:
             if skill.progress_rate > 80:
-                achievements.append(f"Mastered {skill.name}")
+                achievements.append(f"{skill.name}をマスターしました")
         return achievements
     
     def _identify_challenges(self, employee: Employee) -> List[str]:
         return employee.improvement_areas[:3]
     
     def _extract_lessons_learned(self, employee: Employee) -> List[str]:
-        return ["Importance of consistent practice", "Value of peer feedback"]
+        return ["継続的な練習の重要性", "同僚からのフィードバックの価値"]
     
     def _calculate_feedback_implementation_rate(self, employee: Employee) -> float:
         return 75.0  # Placeholder
@@ -394,62 +410,76 @@ class MentorAgent(BaseMentorAgent):
     
     def _provide_skill_support(self, employee: Employee) -> List[str]:
         return [
-            "Identify specific skill gaps",
-            "Recommend targeted learning resources",
-            "Pair with skilled mentor",
-            "Create practice opportunities"
+            "具体的なスキルギャップを特定しました",
+            "対象となる学習リソースを推奨します",
+            "経験豊富なメンターとのマッチングを手配します",
+            "実践的な練習機会を提供します"
         ]
     
     def _provide_motivation_support(self, employee: Employee) -> List[str]:
         return [
-            "Acknowledge recent achievements",
-            "Set achievable short-term goals",
-            "Share success stories from peers",
-            "Offer flexible learning options"
+            "最近の成果を認識し、評価しています",
+            "達成可能な短期目標を設定します",
+            "同僚の成功事例を共有します",
+            "柔軟な学習オプションを提供します"
         ]
     
     def _provide_communication_support(self, employee: Employee) -> List[str]:
         return [
-            "Practice active listening techniques",
-            "Provide communication templates",
-            "Arrange mock presentation sessions",
-            "Encourage team collaboration"
+            "アクティブリスニング技術の練習を行います",
+            "コミュニケーションテンプレートを提供します",
+            "模擬プレゼンテーションセッションを手配します",
+            "チームコラボレーションを促進します"
         ]
     
     def _provide_workload_support(self, employee: Employee) -> List[str]:
         return [
-            "Review current task priorities",
-            "Teach time management techniques",
-            "Identify tasks for delegation",
-            "Establish realistic deadlines"
+            "現在のタスクの優先順位を見直します",
+            "時間管理技術を指導します",
+            "委任可能なタスクを特定します",
+            "現実的な期限を設定します"
         ]
     
     def _provide_general_support(self, employee: Employee) -> List[str]:
         return [
-            "Schedule regular check-ins",
-            "Provide comprehensive resources",
-            "Connect with support network",
-            "Monitor progress closely"
+            "定期的なチェックインをスケジュールします",
+            "包括的なリソースを提供します",
+            "サポートネットワークとの接続を支援します",
+            "進捗を細かく監視します"
         ]
     
     def _generate_follow_up_actions(self, employee: Employee, issue_type: str) -> List[str]:
+        issue_type_jp = {
+            "skill_gap": "スキルギャップ",
+            "motivation": "モチベーション",
+            "communication": "コミュニケーション",
+            "workload": "作業負荷"
+        }.get(issue_type, issue_type)
+        
         return [
-            f"Review progress in 1 week",
-            f"Adjust support based on {issue_type} resolution",
-            "Gather feedback on support effectiveness"
+            "1週間後に進捗を確認します",
+            f"{issue_type_jp}の解決状況に基づいてサポートを調整します",
+            "サポートの効果について フィードバックを収集します"
         ]
     
     def _recommend_resources(self, employee: Employee, issue_type: str) -> List[Dict[str, str]]:
         resources = []
+        issue_type_jp = {
+            "skill_gap": "スキルギャップ",
+            "motivation": "モチベーション",
+            "communication": "コミュニケーション",
+            "workload": "作業負荷"
+        }.get(issue_type, issue_type)
+        
         if issue_type == "skill_gap":
             resources.append({
-                "type": "Online Course",
-                "title": "Advanced Skills Training",
+                "type": "オンラインコース",
+                "title": "高度スキル研修プログラム",
                 "url": "https://example.com/training"
             })
         resources.append({
-            "type": "Article",
-            "title": f"Overcoming {issue_type} Challenges",
+            "type": "記事",
+            "title": f"{issue_type_jp}課題克服ガイド",
             "url": "https://example.com/article"
         })
         return resources

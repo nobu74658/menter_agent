@@ -3,25 +3,25 @@
   "name": "田中太郎",
   "email": "tanaka@example.com",
   "department": "engineering",
-  "hire_date": "2025-03-14 06:42:23.867086",
+  "hire_date": "2025-03-14 06:47:03.717367",
   "mentor_id": null,
   "skills": [
     {
       "name": "Python Programming",
       "level": "beginner",
-      "last_assessed": "2025-05-13 06:42:23.866641",
+      "last_assessed": "2025-05-13 06:47:03.716944",
       "progress_rate": 45.0
     },
     {
       "name": "Communication",
       "level": "intermediate",
-      "last_assessed": "2025-05-28 06:42:23.867052",
+      "last_assessed": "2025-05-28 06:47:03.717332",
       "progress_rate": 72.0
     },
     {
       "name": "Project Management",
       "level": "beginner",
-      "last_assessed": "2025-05-23 06:42:23.867068",
+      "last_assessed": "2025-05-23 06:47:03.717349",
       "progress_rate": 30.0
     }
   ],
@@ -32,37 +32,37 @@
       "metric_name": "Code Quality",
       "value": 7.5,
       "target_value": 8.0,
-      "achieved_date": "2025-06-02 06:42:23.867074",
+      "achieved_date": "2025-06-02 06:47:03.717355",
       "category": "technical"
     },
     {
       "metric_name": "Team Collaboration",
       "value": 8.2,
       "target_value": 8.0,
-      "achieved_date": "2025-06-07 06:42:23.867081",
+      "achieved_date": "2025-06-07 06:47:03.717362",
       "category": "teamwork"
     }
   ],
   "overall_rating": 3.5,
   "strengths": [
-    "Quick learner",
-    "Team player",
-    "Attention to detail"
+    "学習が早い",
+    "チームプレイヤー",
+    "細部への注意力"
   ],
   "improvement_areas": [
-    "Technical documentation",
-    "Time management",
-    "Public speaking"
+    "技術文書作成",
+    "時間管理",
+    "プレゼンテーション"
   ],
   "personality_traits": {},
   "completed_trainings": [
-    "Onboarding",
-    "Git Basics"
+    "新人研修",
+    "Git基礎"
   ],
   "current_objectives": [
-    "Complete Python certification",
-    "Improve code review skills"
+    "Python認定資格取得",
+    "コードレビュースキル向上"
   ],
-  "created_at": "2025-06-12 06:42:23.867162",
-  "updated_at": "2025-06-12 06:42:23.867163"
+  "created_at": "2025-06-12 06:47:03.717444",
+  "updated_at": "2025-06-12 06:47:03.717444"
 }

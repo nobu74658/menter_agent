@@ -59,10 +59,10 @@ def create_sample_employee() -> Employee:
         preferred_learning_style="visual",
         performance_metrics=performance_metrics,
         overall_rating=3.5,
-        strengths=["Quick learner", "Team player", "Attention to detail"],
-        improvement_areas=["Technical documentation", "Time management", "Public speaking"],
-        completed_trainings=["Onboarding", "Git Basics"],
-        current_objectives=["Complete Python certification", "Improve code review skills"]
+        strengths=["学習が早い", "チームプレイヤー", "細部への注意力"],
+        improvement_areas=["技術文書作成", "時間管理", "プレゼンテーション"],
+        completed_trainings=["新人研修", "Git基礎"],
+        current_objectives=["Python認定資格取得", "コードレビュースキル向上"]
     )
     
     return employee
